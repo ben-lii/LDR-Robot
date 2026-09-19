@@ -1,0 +1,17 @@
+[Unit]
+Description=Teleop AV publisher (rpicam-vid → MediaMTX)
+After=network-online.target mediamtx.service
+Wants=network-online.target
+Requires=mediamtx.service
+
+[Service]
+Type=simple
+User=teleop
+Group=teleop
+EnvironmentFile=-/etc/teleop/av.env
+ExecStart=/usr/local/bin/teleop-av-stream.sh
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

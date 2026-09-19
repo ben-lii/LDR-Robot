@@ -1,0 +1,13 @@
+# Example cloudflared config for one robot.
+# Install as /etc/cloudflared/config.yml (credentials file path is machine-specific).
+#
+# Tunnel hostname MUST match ROBOTS_JSON tunnelHost (no https://).
+# Only HTTP(S)/WSS are tunneled. WebRTC UDP media uses :8189 outside this tunnel.
+
+tunnel: YOUR_TUNNEL_UUID
+credentials-file: /etc/cloudflared/YOUR_TUNNEL_UUID.json
+
+ingress:
+  - hostname: robot-1.yourdomain.com
+    service: http://127.0.0.1:8080
+  - service: http_status:404

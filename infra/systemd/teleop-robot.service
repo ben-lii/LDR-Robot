@@ -1,0 +1,17 @@
+[Unit]
+Description=Teleop robot control server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=teleop
+Group=teleop
+WorkingDirectory=/opt/teleop/robot
+EnvironmentFile=/etc/teleop/robot.env
+ExecStart=/usr/bin/node /opt/teleop/robot/dist/index.js
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

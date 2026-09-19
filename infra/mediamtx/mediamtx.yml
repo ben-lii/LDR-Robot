@@ -1,0 +1,44 @@
+###############################################
+# Teleop MediaMTX config
+#
+# Pin: MediaMTX v1.12.2 (verify every key against that release's
+# reference config before upgrading — keys change between versions).
+# Docs: https://github.com/bluenviron/mediamtx
+#
+# Signaling stays on localhost; browsers reach WHEP only via the
+# robot Node proxy. WebRTC media uses UDP :8189.
+###############################################
+
+logLevel: info
+logDestinations: [stdout]
+
+api: true
+apiAddress: 127.0.0.1:9997
+
+rtsp: true
+rtspAddress: 127.0.0.1:8554
+rtmp: false
+hls: false
+srt: false
+
+webrtc: true
+webrtcAddress: 127.0.0.1:8889
+webrtcLocalUDPAddress: :8189
+webrtcICEServers2:
+  - url: stun:stun.l.google.com:19302
+  - url: stun:stun.cloudflare.com:3478
+
+authMethod: internal
+authInternalUsers:
+  - user: any
+    pass:
+    ips: ['127.0.0.1', '::1']
+    permissions:
+      - action: publish
+      - action: read
+      - action: playback
+      - action: api
+
+paths:
+  robot:
+    source: publisher

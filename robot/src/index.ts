@@ -9,6 +9,7 @@ import type { MotorDriver } from './hardware/MotorDriver.js';
 import { createRobotHttpServer } from './net/httpServer.js';
 import type { Config } from './config.js';
 import type { Logger } from './logger.js';
+import { checkMediaReady } from './services/mediaHealth.js';
 
 async function createDriver(config: Config, log: Logger): Promise<MotorDriver> {
   if (config.motorDriver === 'pigpio') {
@@ -30,6 +31,20 @@ async function main(): Promise<void> {
 
   const driver = await createDriver(config, log);
   const seat = new SeatManager();
+  let mediaReadyFlag = false;
+  const refreshMedia = async (): Promise<void> => {
+    try {
+      mediaReadyFlag = await checkMediaReady(config, log);
+    } catch {
+      mediaReadyFlag = false;
+    }
+  };
+  void refreshMedia();
+  const mediaTimer = setInterval(() => {
+    void refreshMedia();
+  }, 5000);
+  mediaTimer.unref();
+
   const controller = new MotorController({
     driver,
     clock,
@@ -44,7 +59,7 @@ async function main(): Promise<void> {
     log,
     startedAtMs,
     driverPresent: () => seat.driverPresent,
-    mediaReady: () => false,
+    mediaReady: () => mediaReadyFlag,
   });
   controller.start();
 
@@ -72,6 +87,7 @@ async function main(): Promise<void> {
     shuttingDown = true;
     log.warn({ reason }, 'shutting down');
     try {
+      clearInterval(mediaTimer);
       controller.dispose();
     } catch (error) {
       log.error({ err: error }, 'controller dispose failed');

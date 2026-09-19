@@ -1,0 +1,16 @@
+[Unit]
+Description=MediaMTX (teleop WebRTC / RTSP)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=teleop
+Group=teleop
+ExecStart=/usr/local/bin/mediamtx /etc/teleop/mediamtx.yml
+Restart=always
+RestartSec=2
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

@@ -92,15 +92,15 @@ Schema validation (readable field errors) lives in `web/src/lib/env.server.ts` /
 1. Copy `robot/.env.example` → `robot/.env`
 2. Paste `ROBOT_ID` and `TOKEN_PUBLIC_JWK` from step 1
 3. Set `ALLOWED_ORIGINS` to include `http://localhost:3000` (and your Vercel origin later)
-4. Keep `MOTOR_DRIVER=mock` and `MEDIA_MODE=disabled` on a laptop
+4. Keep `MOTOR_DRIVER=mock`. Leave `MEDIA_MODE=disabled` until you want video; for laptop webcam testing set `MEDIA_MODE=mediamtx` and follow `docs/LOCAL_VIDEO.md`.
 
 ---
 
-## Later (not in this phase)
+## Later (deployment)
 
-- Create the Vercel project (Root Directory `web`, Node 22, env vars, redeploy when users/robots change)
-- Cloudflare domain + tunnel
-- Pi OS, MediaMTX, systemd, real motors
-- First end-to-end drive test and optional TURN
-
-Those steps will be expanded in later phases.
+- [ ] Vercel project (Root Directory `web`, Node 22); set all `web/.env.example` vars; redeploy when users/robots change  
+- [ ] Cloudflare domain + tunnel → `http://127.0.0.1:8080`; hostname = `ROBOTS_JSON.tunnelHost`  
+- [ ] Pi: follow `docs/PI_SETUP.md` (pigpio, MediaMTX v1.12.2, AV, robot service, cloudflared)  
+- [ ] Wiring / power: `docs/HARDWARE.md`  
+- [ ] Optional TURN for remote WebRTC (`docs/TROUBLESHOOTING.md`)  
+- [ ] Laptop video without Pi: `docs/LOCAL_VIDEO.md`

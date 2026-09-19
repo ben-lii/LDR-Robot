@@ -24,6 +24,7 @@ import { collectTelemetry } from '../services/telemetry.js';
 import { checkMediaReady } from '../services/mediaHealth.js';
 import { applyCorsHeaders, originAllowed } from './cors.js';
 import { attachWsServer, type WsServer } from './wsServer.js';
+import { createWhepProxy } from './whepProxy.js';
 
 export type RobotHttpServer = {
   readonly server: Server;
@@ -107,6 +108,8 @@ export function createRobotHttpServer(options: {
     controller,
     getState,
   });
+
+  const whep = createWhepProxy({ config, log, clock, verifier });
 
   async function handleRequest(
     req: IncomingMessage,
@@ -194,6 +197,11 @@ export function createRobotHttpServer(options: {
         return;
       }
 
+      const handledWhep = await whep.handle(req, res, path, corsHeaders);
+      if (handledWhep) {
+        return;
+      }
+
       sendJson(res, 404, { error: 'not_found' }, corsHeaders);
     } catch (error) {
       log.error({ err: error }, 'http handler error');
@@ -222,6 +230,7 @@ export function createRobotHttpServer(options: {
       });
     },
     async close() {
+      whep.dispose();
       await ws.close();
       await new Promise<void>((resolve, reject) => {
         server.close((err) => (err ? reject(err) : resolve()));
