@@ -1,0 +1,26 @@
+---
+description: Non-negotiable project invariants for the teleop robot system
+alwaysApply: true
+---
+
+# Project invariants
+
+1. **One source of truth for the contract.** Message schemas, token claims, API response shapes, and shared constants (timeouts, rates, paths) exist only in `packages/protocol` (`@teleop/protocol`). Never redeclare a message shape or a magic number anywhere else — import it.
+2. **Config only through validated env modules** (`web/src/lib/env.public.ts`, `web/src/lib/env.server.ts`, `robot/src/config.ts`), parsed with zod at startup with readable errors. No `process.env` anywhere else.
+3. **Only `MotorController` touches motors, and only through the `MotorDriver` interface.** Nothing else imports `pigpio` or knows a GPIO pin.
+4. **Safety is enforced on the robot, never trusted to the browser.** Watchdog, brake, e-stop, token expiry, and role checks are robot-side. The UI is a convenience layer.
+5. **The real-time path never calls Vercel or Supabase.** Only token refresh and heartbeat do.
+6. **Heartbeat/telemetry/media problems must never affect motor control or crash the process.** Wrap, log, continue.
+7. **Validate every inbound message and request body with zod** before using it. Unknown or malformed → reject; never crash.
+8. **Secrets stay server-side.** Modules holding secrets start with `import 'server-only'` (web) and live under `web/src/server/`. Nothing secret uses a `NEXT_PUBLIC_` name. Never log tokens, secrets, or key material.
+9. **UI components are presentational; side effects live in hooks.** Hooks don't import components. Console feature code lives in `web/src/features/console/` and exports through its `index.ts`.
+10. **UI that reflects robot reality (mode, e-stop, brake, who is driving) is derived from robot `state` messages**, not from local guesses. Local optimistic state is allowed only for the on-screen key highlight.
+11. **Every timer, listener, socket, and peer connection has cleanup.** Every hook must be safe under React StrictMode double-mounting.
+12. **Time is injectable in logic** (a `now()`/clock parameter) so watchdog, ramp, and expiry are unit-testable with fake timers. No stray `Date.now()` in pure logic.
+13. **Strict TypeScript** (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`). No `any`. Non-null assertions need an explanatory comment.
+14. **Hardware facts are config, not code:** pin numbers, motor inversion/swap, PWM frequency, minimum duty, ramp time, watchdog time.
+15. **Design tokens (colors, radii, spacing, type scale) live only in `web/src/app/globals.css`.** Components use token-based classes; no hard-coded hex values in components. UI copy strings live only in `features/console/copy.ts`.
+16. **Adding or changing a message type = one change** that updates the zod schema, `docs/PROTOCOL.md`, and tests together.
+17. **DB changes only via new migration files** in `supabase/migrations/`. Never edit an applied migration.
+18. **Run typecheck, lint, and tests before and after every change.** Do not disable rules or skip tests to get green.
+19. **Fail safe:** on any doubt (bad token, bad clock, driver fault, unknown state) the robot stops the motors.

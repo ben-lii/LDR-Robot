@@ -1,0 +1,73 @@
+# ─────────────────────────────────────────────────────────────
+# Secrets — NEVER commit these
+# ─────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.jwk
+*.jwk.json
+**/keys/
+**/secrets/
+
+# Cloudflare tunnel credentials / origin cert
+.cloudflared/
+cert.pem
+infra/**/*credentials*.json
+infra/**/*.token
+
+# Supabase CLI local state
+supabase/.branches
+supabase/.temp
+supabase/.env
+
+# ─────────────────────────────────────────────────────────────
+# Dependencies & build output
+# ─────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.*
+.next/
+out/
+dist/
+build/
+.turbo/
+.vercel
+.cache/
+tmp/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# ─────────────────────────────────────────────────────────────
+# Logs & runtime
+# ─────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.pid
+
+# ─────────────────────────────────────────────────────────────
+# Tests
+# ─────────────────────────────────────────────────────────────
+playwright-report/
+test-results/
+
+# ─────────────────────────────────────────────────────────────
+# Editors & OS
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+.vscode/*
+!.vscode/extensions.json
+
+# Cursor: keep shared rules, ignore everything else
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
