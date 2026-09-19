@@ -12,10 +12,13 @@
   "scripts": {
     "dev:web": "npm run dev -w web",
     "dev:robot": "npm run dev -w robot",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "smoke:robot": "npm run smoke -w robot",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc --noEmit -p scripts/tsconfig.json",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
+    "secrets:generate": "tsx scripts/generate-secrets.ts",
+    "user:hash": "tsx scripts/hash-password.ts",
     "format": "prettier --check .",
     "format:write": "prettier --write ."
   },
@@ -23,6 +26,7 @@
     "@eslint/js": "^9.36.0",
     "@types/node": "^22.18.6",
     "eslint": "^9.36.0",
+    "jose": "^6.2.12",
     "prettier": "^3.6.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",

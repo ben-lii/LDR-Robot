@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@teleop/protocol": ["../packages/protocol/src/index.ts"]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "../packages/protocol/src/**/*.ts",
+    "../web/src/server/auth/password.ts",
+    "../web/src/lib/env.schemas.ts"
+  ]
+}

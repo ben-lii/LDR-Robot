@@ -4,10 +4,25 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --import tsx src/index.ts",
+    "dev": "node --env-file=.env --import tsx src/index.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run --passWithNoTests",
-    "build": "tsup"
+    "build": "tsup",
+    "smoke": "tsx scripts/ws-smoke.ts"
+  },
+  "dependencies": {
+    "@teleop/protocol": "^0.0.0",
+    "jose": "^6.2.12",
+    "pino": "^10.3.1",
+    "ws": "^8.21.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "tsup": "^8.5.1"
+  },
+  "optionalDependencies": {
+    "pigpio": "^3.3.1"
   }
 }
