@@ -28,16 +28,64 @@ sudo usermod -aG video,gpio,i2c,spi teleop   # adjust groups as needed
 
 Enable camera / I2S using the notes in `infra/pi/config.txt.notes.md`, then reboot.
 
-## 2. pigpio
+## 2. GPIO / motors (Trixie: gpiod, not pigpio)
+
+`pigpio` is **not** in Raspberry Pi OS Trixie. Use **`MOTOR_DRIVER=gpiod`**:
+libgpiod via the optional `rpi-io` npm package, plus userspace software PWM
+(any BCM pins from `PIN_*`).
 
 ```bash
-sudo apt install -y pigpio
-sudo systemctl enable --now pigpiod
+sudo apt install -y libgpiod-dev gpiod build-essential python3
+# teleop user must be in the gpio group (see §1)
 ```
 
-The Node binding is an **optional** dependency of `robot/` (`pigpio` npm package). It only installs cleanly on the Pi.
+Optional legacy (Bookworm / self-built pigpio only):
 
+```bash
+# Only if pigpio packages or a from-source build are available:
+# sudo apt install -y pigpio && sudo systemctl enable --now pigpiod
+# then MOTOR_DRIVER=pigpio
+```
+
+The Node bindings (`rpi-io`, optionally `pigpio`) are **optionalDependencies** of
+`robot/` — they only install cleanly on the Pi.
 ## 3. Clone and build
+
+**Recommended on a Zero 2 W:** build on your PC, copy artifacts (skip full-repo `npm ci` on the Pi — it often OOMs).
+
+### 3a. On your PC (PowerShell)
+
+```powershell
+cd C:\Users\silly\Documents\LDR-Robot
+npm run build -w robot
+```
+
+### 3b. On the Pi (once)
+
+```bash
+sudo mkdir -p /opt/teleop/robot
+sudo chown -R teleop:teleop /opt/teleop
+```
+
+### 3c. Copy from PC → Pi
+
+Replace `PI_IP` (e.g. `192.168.1.42`) and use the `teleop` user (or your pi user, then `chown`):
+
+```powershell
+scp -r robot\dist teleop@PI_IP:/opt/teleop/robot/
+scp robot\package.runtime.json teleop@PI_IP:/opt/teleop/robot/package.json
+```
+
+### 3d. On the Pi — production deps only
+
+```bash
+cd /opt/teleop/robot
+sudo -u teleop npm install --omit=dev
+# If rpi-io failed to build: sudo apt install -y libgpiod-dev gpiod build-essential
+# then: cd /opt/teleop/robot/node_modules/rpi-io && sudo -u teleop npm install
+```
+
+### Alternative: build on the Pi (slow / needs swap)
 
 ```bash
 sudo mkdir -p /opt/teleop && sudo chown teleop:teleop /opt/teleop
@@ -45,10 +93,10 @@ sudo -u teleop git clone <your-repo-url> /opt/teleop/src
 cd /opt/teleop/src
 sudo -u teleop npm ci
 sudo -u teleop npm run build -w @teleop/protocol -w robot
-# Deploy built robot somewhere stable:
 sudo -u teleop mkdir -p /opt/teleop/robot
 sudo -u teleop cp -r robot/dist robot/package.json /opt/teleop/robot/
-# On the Pi, install production deps including optional pigpio:
+# Prefer package.runtime.json as package.json on the Pi (no workspace @teleop/protocol):
+sudo -u teleop cp robot/package.runtime.json /opt/teleop/robot/package.json
 cd /opt/teleop/robot && sudo -u teleop npm install --omit=dev
 ```
 
@@ -67,7 +115,7 @@ Edit `/etc/teleop/robot.env`:
 - `ROBOT_ID` = UUID from secrets (must match `ROBOTS_JSON[].id`)  
 - `TOKEN_PUBLIC_JWK` = public JWK only  
 - `ALLOWED_ORIGINS` = your Vercel origin(s), comma-separated  
-- `MOTOR_DRIVER=pigpio`  
+- `MOTOR_DRIVER=gpiod`  
 - `MEDIA_MODE=mediamtx`  
 - Pin / invert / swap as needed (`docs/HARDWARE.md`)
 
@@ -83,7 +131,7 @@ Pin: **MediaMTX v1.12.2** (see comment in `infra/mediamtx/mediamtx.yml`).
 sudo cp /opt/teleop/src/infra/systemd/mediamtx.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now mediamtx
-curl -sS http://127.0.0.1:9997/v3/config/get | head
+curl -sS http://127.0.0.1:9997/v3/config/global/get | head
 ```
 
 ## 6. AV publisher

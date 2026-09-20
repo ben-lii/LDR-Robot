@@ -9,7 +9,7 @@ export default defineConfig({
   clean: true,
   splitting: false,
   dts: false,
-  // Bundle the protocol package; keep native optional dep external.
+  // Bundle the protocol package; keep native optional deps external.
   noExternal: ['@teleop/protocol'],
-  external: ['pigpio'],
+  external: ['pigpio', 'rpi-io'],
 });

@@ -5,6 +5,9 @@
 import type { Config } from '../config.js';
 import type { Logger } from '../logger.js';
 import type { MotorDriver, Side } from './MotorDriver.js';
+import { applyMinDuty } from './drv8833.js';
+
+export { applyMinDuty } from './drv8833.js';
 
 const PWM_RANGE = 255;
 
@@ -24,16 +27,6 @@ type GpioCtor = {
   ): GpioHandle;
   readonly OUTPUT: number;
 };
-
-/** Exported for unit tests — maps signed command to PWM duty 0..1 after min-duty. */
-export function applyMinDuty(signedMagnitude: number, minDuty: number): number {
-  const mag = Math.min(1, Math.max(0, signedMagnitude));
-  if (mag === 0) {
-    return 0;
-  }
-  const min = Math.min(1, Math.max(0, minDuty));
-  return min + (1 - min) * mag;
-}
 
 function dutyToPwm(duty01: number): number {
   return Math.round(Math.min(1, Math.max(0, duty01)) * PWM_RANGE);

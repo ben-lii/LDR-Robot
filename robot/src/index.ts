@@ -12,6 +12,10 @@ import type { Logger } from './logger.js';
 import { checkMediaReady } from './services/mediaHealth.js';
 
 async function createDriver(config: Config, log: Logger): Promise<MotorDriver> {
+  if (config.motorDriver === 'gpiod') {
+    const { createGpiodDriver } = await import('./hardware/gpiodDriver.js');
+    return createGpiodDriver(config, log);
+  }
   if (config.motorDriver === 'pigpio') {
     const { createPigpioDriver } = await import('./hardware/pigpioDriver.js');
     return createPigpioDriver(config, log);

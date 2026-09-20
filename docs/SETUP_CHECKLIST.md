@@ -100,7 +100,7 @@ Schema validation (readable field errors) lives in `web/src/lib/env.server.ts` /
 
 - [ ] Vercel project (Root Directory `web`, Node 22); set all `web/.env.example` vars; redeploy when users/robots change  
 - [ ] Cloudflare domain + tunnel → `http://127.0.0.1:8080`; hostname = `ROBOTS_JSON.tunnelHost`  
-- [ ] Pi: follow `docs/PI_SETUP.md` (pigpio, MediaMTX v1.12.2, AV, robot service, cloudflared)  
+- [ ] Pi: follow `docs/PI_SETUP.md` (gpiod/rpi-io, MediaMTX v1.12.2, AV, robot service, cloudflared)  
 - [ ] Wiring / power: `docs/HARDWARE.md`  
 - [ ] Optional TURN for remote WebRTC (`docs/TROUBLESHOOTING.md`)  
 - [ ] Laptop video without Pi: `docs/LOCAL_VIDEO.md`

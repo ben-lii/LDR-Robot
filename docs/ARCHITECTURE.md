@@ -21,5 +21,7 @@ runtime drive/media state lives in memory on the robot.
 ## Pi deployment
 
 End-to-end OS / systemd / tunnel steps: `docs/PI_SETUP.md`.  
-Wiring and power: `docs/HARDWARE.md`. Motors use `MOTOR_DRIVER=pigpio` only on
-the Pi; `pigpio` is loaded via dynamic import and is an optional dependency.
+Wiring and power: `docs/HARDWARE.md`. On the Pi prefer `MOTOR_DRIVER=gpiod`
+(`rpi-io` + soft PWM, Trixie-friendly). Legacy `MOTOR_DRIVER=pigpio` remains for
+Bookworm / self-built pigpio. Both are optional native deps loaded only via
+dynamic import; laptops use `mock`.

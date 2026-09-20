@@ -32,7 +32,9 @@ Software can fix wiring mistakes without rewiring:
 - `INVERT_LEFT` / `INVERT_RIGHT` — flip that side’s sign  
 - `SWAP_MOTORS` — swap left/right after mix  
 
-`MIN_DRIVE_DUTY` (default `0.25`) lifts small commands so N20s overcome stiction. `PWM_FREQUENCY_HZ` defaults to `1000` (pigpio may round to a supported rate).
+`MIN_DRIVE_DUTY` (default `0.25`) lifts small commands so N20s overcome stiction.
+`PWM_FREQUENCY_HZ` defaults to `1000`; with `MOTOR_DRIVER=gpiod` soft PWM is
+clamped to 400 Hz (userspace timers). `pigpio` may round to a supported rate.
 
 ## Drive truth table (DRV8833)
 

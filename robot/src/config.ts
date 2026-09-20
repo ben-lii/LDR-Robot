@@ -20,7 +20,7 @@ const envSchema = z.object({
   PORT: intFromEnv.default(8080),
   BIND: z.string().default('127.0.0.1'),
   MAX_WS_CLIENTS: intFromEnv.default(4),
-  MOTOR_DRIVER: z.enum(['mock', 'pigpio']).default('mock'),
+  MOTOR_DRIVER: z.enum(['mock', 'gpiod', 'pigpio']).default('mock'),
   PIN_AIN1: intFromEnv.default(5),
   PIN_AIN2: intFromEnv.default(6),
   PIN_BIN1: intFromEnv.default(13),
@@ -51,7 +51,7 @@ export type Config = Readonly<{
   port: number;
   bind: string;
   maxWsClients: number;
-  motorDriver: 'mock' | 'pigpio';
+  motorDriver: 'mock' | 'gpiod' | 'pigpio';
   pinAin1: number;
   pinAin2: number;
   pinBin1: number;
