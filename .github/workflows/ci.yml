@@ -20,7 +20,7 @@ jobs:
       - run: npm run test
       - run: npm run build -w web
         env:
-          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key
-          SUPABASE_SERVICE_ROLE_KEY: dummy-service-role-key
-          TOKEN_SIGNING_PRIVATE_JWK: '{}'
+          SESSION_SECRET: ci-session-secret-at-least-32-chars-long
+          AUTH_USERS_JSON: '[{"email":"ci@example.com","passwordHash":"scrypt$16384$8$1$AAAAAAAAAAAAAAAAAAAAAA==$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==","permission":"driver","robots":["robot-1"]}]'
+          ROBOTS_JSON: '[{"id":"00000000-0000-4000-8000-000000000001","slug":"robot-1","name":"Robot 1","tunnelHost":"robot-1.example.com"}]'
+          TOKEN_SIGNING_PRIVATE_JWK: '{"kty":"EC","crv":"P-256","x":"bExkQThVBa6RAkObK2NjBzTxgKclXKoS70yrlJN1GmU","y":"MrVtLUld9egIMRqze3qhLC5BAn_t3Ae9FIMwLc2FmH4","d":"aE_FWjw1sZJRd7yl2MPOEv1IcFJ_PUVD2baLVN9IIVo","alg":"ES256","use":"sig"}'
